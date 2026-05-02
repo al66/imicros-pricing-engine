@@ -15,6 +15,12 @@ The pricing engine derives pricing-relevant attributes from raw business facts u
 
 ---
 
+## Documentation
+
+- [Data Model](docs/data-model.md) – PostgreSQL schema reference for all tables, views, indexes, and operators.
+
+---
+
 ## pgmock Integration Test
 
 The file `test/pricing.pgmock.spec.js` uses [pgmock](https://github.com/stack-auth/pgmock) to run the entire database layer against an in-memory PostgreSQL instance – no external database is required.

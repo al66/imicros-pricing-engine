@@ -1,0 +1,39 @@
+{
+  "name": "imicros-pricing-engine",
+  "version": "0.0.1",
+  "description": "Pricing engine Moleculer service with PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --forceExit --no-cache",
+    "test:perf": "jest --forceExit --no-cache --testPathPattern=pricing.perf.spec.js"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "pricing.perf.spec.js"
+    ],
+    "rootDir": ".",
+    "roots": [
+      "./test"
+    ]
+  },
+  "keywords": [
+    "Moleculer",
+    "imicros",
+    "pricing"
+  ],
+  "author": "Andreas Leinen <andreas.leinen@imicros.de> (www.imicros.de)",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "pgmock": "^1.0.3"
+  },
+  "dependencies": {
+    "moleculer": "^0.14.33",
+    "pg": "^8.13.3",
+    "uuid": "^9.0.1"
+  }
+}

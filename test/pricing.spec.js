@@ -33,7 +33,16 @@ describe("PricingService", () => {
                     { condition_id: "1001", condition_type: "DISCOUNT", value_type: "PERCENT", value_number: "5.00", priority: 100 }
                 ]
             }),
-            addRule: jest.fn().mockResolvedValue({ ruleId: "2001" })
+            addRule: jest.fn().mockResolvedValue({ ruleId: "2001" }),
+            getRules: jest.fn().mockImplementation(({ targetKey } = {}) => {
+                const rules = [
+                    { rule_id: "2001", rule_name: "Rule A", target_key: "customer.segment", target_text: "grosskunde", priority: 100, active: true, condition_count: 2 },
+                    { rule_id: "2002", rule_name: "Rule B", target_key: "sales.region", target_text: "west", priority: 200, active: true, condition_count: 1 }
+                ];
+                if (targetKey) return Promise.resolve(rules.filter(r => r.target_key === targetKey));
+                return Promise.resolve(rules);
+            }),
+            removeRule: jest.fn().mockResolvedValue({ removed: true })
         };
         DB.mockImplementation(() => mockDbInstance);
 
@@ -133,6 +142,31 @@ describe("PricingService", () => {
                 targetKey: "customer.segment",
                 targetText: "grosskunde"
             }));
+        });
+    });
+
+    describe("getRules", () => {
+        it("should return all rules when no targetKey is provided", async () => {
+            const result = await broker.call("pricing.getRules", {});
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.length).toBe(2);
+            expect(mockDbInstance.getRules).toHaveBeenCalledWith({});
+        });
+
+        it("should return only rules matching targetKey when targetKey is provided", async () => {
+            const result = await broker.call("pricing.getRules", { targetKey: "customer.segment" });
+            expect(Array.isArray(result)).toBe(true);
+            expect(result.length).toBe(1);
+            expect(result[0]).toEqual(expect.objectContaining({ target_key: "customer.segment" }));
+            expect(mockDbInstance.getRules).toHaveBeenCalledWith({ targetKey: "customer.segment" });
+        });
+    });
+
+    describe("removeRule", () => {
+        it("should remove a rule and return removed: true", async () => {
+            const result = await broker.call("pricing.removeRule", { ruleId: "2001" });
+            expect(result).toEqual({ removed: true });
+            expect(mockDbInstance.removeRule).toHaveBeenCalledWith({ ruleId: "2001" });
         });
     });
 

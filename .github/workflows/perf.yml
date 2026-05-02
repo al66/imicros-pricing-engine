@@ -1,0 +1,64 @@
+name: Performance Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  schedule:
+    # Run every night at 02:00 UTC
+    - cron: "0 2 * * *"
+
+jobs:
+  perf:
+    name: Pricing Engine – Performance Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pricing_perf
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: pricing_perf
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PERF_TEST: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run performance tests
+        id: perf
+        run: npm run test:perf 2>&1 | tee perf-output.txt
+
+      - name: Publish results as workflow summary
+        if: always()
+        run: |
+          echo "## Pricing Engine – Performance Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          grep -A 6 "Sequential Throughput\|Concurrent Throughput" perf-output.txt >> $GITHUB_STEP_SUMMARY || true
+          echo '```' >> $GITHUB_STEP_SUMMARY

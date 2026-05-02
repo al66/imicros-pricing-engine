@@ -4,14 +4,16 @@
   "description": "Pricing engine Moleculer service with PostgreSQL",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit --no-cache"
+    "test": "jest --forceExit --no-cache",
+    "test:perf": "jest --forceExit --no-cache --testPathPattern=pricing.perf.spec.js"
   },
   "jest": {
     "collectCoverageFrom": [
       "lib/**/*.js"
     ],
     "testPathIgnorePatterns": [
-      "/node_modules/"
+      "/node_modules/",
+      "pricing.perf.spec.js"
     ],
     "rootDir": ".",
     "roots": [

@@ -220,6 +220,10 @@ describe("DB with pgmock – B2B Software License Pricing", () => {
 
     afterAll(async () => {
         await db.disconnect();
+        // mock.destroy() calls the emulator's async destroy() without awaiting it,
+        // so the CPU simulation timer loop keeps running. Awaiting it here first
+        // stops that loop before handing off to the mock's synchronous cleanup.
+        await mock.subtle.v86.destroy();
         mock.destroy();
     });
 

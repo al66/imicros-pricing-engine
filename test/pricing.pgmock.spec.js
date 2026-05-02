@@ -220,11 +220,14 @@ describe("DB with pgmock – B2B Software License Pricing", () => {
 
     afterAll(async () => {
         await db.disconnect();
-        // mock.destroy() calls the emulator's async destroy() without awaiting it,
-        // so the CPU simulation timer loop keeps running. Awaiting it here first
-        // stops that loop before handing off to the mock's synchronous cleanup.
+        // mock.subtle.v86 is the underlying V86Starter emulator (Y instance).
+        // Its destroy() is async: it stops the CPU timer loop and cleans up all
+        // adapters (network, keyboard, …). Awaiting it here ensures that the CPU
+        // simulation has fully stopped before Jest exits.
+        // We do NOT call mock.destroy() afterwards because it would invoke the
+        // same emulator destroy() a second time, causing a
+        // "Network adapter has already been destroyed" error.
         await mock.subtle.v86.destroy();
-        mock.destroy();
     });
 
     // ─── Scenario A: Premium reseller in EMEA ────────────────────────────────

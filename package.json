@@ -7,16 +7,27 @@
     "test": "jest --forceExit --no-cache"
   },
   "jest": {
-    "collectCoverageFrom": ["lib/**/*.js"],
-    "testPathIgnorePatterns": ["/node_modules/"],
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/"
+    ],
     "rootDir": ".",
-    "roots": ["./test"]
+    "roots": [
+      "./test"
+    ]
   },
-  "keywords": ["Moleculer", "imicros", "pricing"],
+  "keywords": [
+    "Moleculer",
+    "imicros",
+    "pricing"
+  ],
   "author": "Andreas Leinen <andreas.leinen@imicros.de> (www.imicros.de)",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "pgmock": "^1.0.3"
   },
   "dependencies": {
     "moleculer": "^0.14.33",

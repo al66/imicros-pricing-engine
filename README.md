@@ -1,5 +1,5 @@
 # imicros-pricing-engine
-Pricing engine Moleculer service with PostgreSQL
+Pricing engine [Moleculer](https://moleculer.services/index.html) service with PostgreSQL
 
 ## Overview
 
